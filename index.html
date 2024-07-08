@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reconnaissance vocale</title>
+    <style>
+        * {
+            font-family: Roboto;
+        }
+        button {
+            font-size: 2em;
+        }
+        textarea {
+            width: 100%;
+            font-size: 2em;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reconnaissance vocale</h1>
+    <textarea id="texte"></textarea>
+    <p>
+        <button id="controle">Controle</button>
+    </p>
+
+    <script>
+        // Obtention des éléments du DOM
+        let btnControle = document.getElementById("controle");
+        let inputTexte = document.getElementById("texte");
+
+        // Initialisation de l'objet de reconnaissance vocale
+        let reconnaissance = new webkitSpeechRecognition();
+        reconnaissance.continuous = true; // Autorise la transcription continue
+        reconnaissance.interimResults = false; // Ne montre pas les résultats intermédiaires
+        reconnaissance.lang = 'fr-FR';
+
+        // Variable pour suivre si la reconnaissance est en cours
+        let isRecording = false;
+
+        // Gestionnaire pour l'événement 'result'
+        reconnaissance.onresult = function(event) {
+            inputTexte.value = event.results[0][0].transcript;
+        };
+
+        // Gestionnaire pour l'événement 'end'
+        reconnaissance.onend = function() {
+            console.log('La reconnaissance vocale s\'est terminée.');
+        };
+
+        // Ajout d'un écouteur d'événements au bouton unique
+        btnControle.onclick = function() {
+            if (!isRecording) {
+                reconnaissance.start(); // Démarre la reconnaissance si elle n'est pas déjà en cours
+                isRecording = true;
+            } else {
+                reconnaissance.stop(); // Arrête la reconnaissance si elle est en cours
+                isRecording = false;
+            }
+        };
+    </script>
+</body>
+</html>
